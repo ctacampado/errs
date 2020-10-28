@@ -87,7 +87,7 @@ func E(args ...interface{}) *Error {
 			e.OpStack = append(e.OpStack, "_")
 			copy(e.OpStack[1:], e.OpStack[0:])
 			e.OpStack[0] = e.Op
-		case ErrString:
+		case error:
 			e.Err = a
 		case ErrType:
 			e.Kind = a
