@@ -18,7 +18,7 @@ type ErrType string
 // ErrString is the error string
 type ErrString string
 
-// ErrArgs is the argument involved in the operation
+// ErrArgs is the argument involved in the
 type ErrArgs interface {
 	Len() int
 }
