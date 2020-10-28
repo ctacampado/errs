@@ -32,7 +32,7 @@ type Error struct {
 }
 
 // New returns a new custom error
-func New(o Op, e ErrString, k ErrType, a ErrArgs) *Error {
+func New(o Op, e error, k ErrType, a ErrArgs) *Error {
 	return &Error{
 		Op:      o,
 		OpStack: OpStack{o},
