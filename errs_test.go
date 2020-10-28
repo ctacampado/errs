@@ -11,7 +11,7 @@ func TestSingleStack(t *testing.T) {
 	op := Op("TestSingleStack")
 	eans, e := intDiv(100, 20, 0)
 	if e != nil {
-		log.Println(E(op, e).String())
+		log.Println(E(op, e).Error())
 	} else {
 		fmt.Printf("[%s] answer: %d\n", op, eans)
 	}
@@ -42,7 +42,7 @@ func TestMultiStack(t *testing.T) {
 
 	fourth := func() *Error {
 		err := New("fourth", errors.New("in fourth"), "4th", tArgs)
-		log.Println(err.String())
+		log.Println(err.Error())
 		return err
 	}
 
@@ -55,21 +55,21 @@ func TestMultiStack(t *testing.T) {
 	second := func() *Error {
 		op := Op("second")
 		err := third()
-		log.Println(err.String())
+		log.Println(err.Error())
 		return E(op, err)
 	}
 
 	first := func() *Error {
 		op := Op("first")
 		err := second()
-		log.Println(err.String())
+		log.Println(err.Error())
 		return E(op, err)
 	}
 
 	op := Op("TestMultiStack")
 	err := first()
 	e := E(op, err)
-	log.Println(e.String())
+	log.Println(e.Error())
 
 	want := errors.New("in fourth")
 	got := e.Err
