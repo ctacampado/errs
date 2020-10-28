@@ -15,9 +15,6 @@ type OpStack []Op
 // ErrType is the error type string
 type ErrType string
 
-// ErrString is the error string
-type ErrString error
-
 // ErrArgs is the argument involved in the error
 type ErrArgs interface {
 	Len() int
