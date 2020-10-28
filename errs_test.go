@@ -1,7 +1,6 @@
 package errs
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"testing"
@@ -11,15 +10,71 @@ func TestSingleStack(t *testing.T) {
 	op := Op("TestSingleStack")
 	eans, e := intDiv(100, 20, 0)
 	if e != nil {
-		log.Println(fmt.Errorf("division error: %w", errors.New(e.Err)))
+		log.Println(E(op, e).String())
 	} else {
 		fmt.Printf("[%s] answer: %d\n", op, eans)
 	}
 
-	want := "can't divide by zero"
+	want := ErrString("can't divide by zero")
 	got := e.Err
 	if want != got {
 		t.Errorf("want %s got %s | errs %#v | fail", want, got, e)
+	}
+}
+
+type TestStr struct {
+	A int
+	B string
+}
+type TestStrs []TestStr
+
+func (s TestStrs) Len() int {
+	return len(s)
+}
+
+func TestMultiStack(t *testing.T) {
+
+	tArgs := TestStrs{
+		{A: 1, B: "hello"},
+		{A: 2, B: "world"},
+	}
+
+	fourth := func() *Error {
+		err := New("fourth", ErrString("in fourth"), "4th", tArgs)
+		log.Println(err.String())
+		return err
+	}
+
+	third := func() *Error {
+		op := Op("third")
+		err := fourth()
+		return E(op, err)
+	}
+
+	second := func() *Error {
+		op := Op("second")
+		err := third()
+		log.Println(err.String())
+		return E(op, err)
+	}
+
+	first := func() *Error {
+		op := Op("first")
+		err := second()
+		log.Println(err.String())
+		return E(op, err)
+	}
+
+	op := Op("TestMultiStack")
+	err := first()
+	e := E(op, err)
+	log.Println(e.String())
+
+	want := ErrString("in fourth")
+	got := e.Err
+
+	if want != got {
+		t.Errorf("want %s got %s | err %#v | fail", want, got, e)
 	}
 }
 

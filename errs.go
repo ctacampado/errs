@@ -29,13 +29,13 @@ type ErrArgs interface {
 type Error struct {
 	Op      Op
 	OpStack OpStack
-	Err     string
+	Err     ErrString
 	Kind    ErrType
 	Args    ErrArgs
 }
 
 // New returns a new custom error
-func New(o Op, e string, k ErrType, a ErrArgs) *Error {
+func New(o Op, e ErrString, k ErrType, a ErrArgs) *Error {
 	return &Error{
 		Op:      o,
 		OpStack: OpStack{o},
@@ -72,6 +72,7 @@ func (e Error) StackTrace() string {
 }
 
 // E returns an errs.Error
+// args order should be: OpStack, Op, ErrString, ErrType, *Error, ErrArgs
 func E(args ...interface{}) *Error {
 	e := &Error{}
 	if len(args) == 0 {
@@ -86,7 +87,7 @@ func E(args ...interface{}) *Error {
 			e.OpStack = append(e.OpStack, "_")
 			copy(e.OpStack[1:], e.OpStack[0:])
 			e.OpStack[0] = e.Op
-		case string:
+		case ErrString:
 			e.Err = a
 		case ErrType:
 			e.Kind = a
