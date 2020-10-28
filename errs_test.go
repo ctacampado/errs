@@ -1,6 +1,7 @@
 package errs
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"testing"
@@ -15,9 +16,9 @@ func TestSingleStack(t *testing.T) {
 		fmt.Printf("[%s] answer: %d\n", op, eans)
 	}
 
-	want := ErrString("can't divide by zero")
+	want := errors.New("can't divide by zero")
 	got := e.Err
-	if want != got {
+	if want.Error() != got.Error() {
 		t.Errorf("want %s got %s | errs %#v | fail", want, got, e)
 	}
 }
@@ -40,7 +41,7 @@ func TestMultiStack(t *testing.T) {
 	}
 
 	fourth := func() *Error {
-		err := New("fourth", ErrString("in fourth"), "4th", tArgs)
+		err := New("fourth", errors.New("in fourth"), "4th", tArgs)
 		log.Println(err.String())
 		return err
 	}
@@ -70,10 +71,10 @@ func TestMultiStack(t *testing.T) {
 	e := E(op, err)
 	log.Println(e.String())
 
-	want := ErrString("in fourth")
+	want := errors.New("in fourth")
 	got := e.Err
 
-	if want != got {
+	if want.Error() != got.Error() {
 		t.Errorf("want %s got %s | err %#v | fail", want, got, e)
 	}
 }
@@ -88,7 +89,7 @@ func intDiv(a, b, c int) (int, *Error) {
 	if b == 0 || c == 0 {
 		err := New(
 			"intDiv",
-			"can't divide by zero",
+			errors.New("can't divide by zero"),
 			"DIVERR",
 			Args{a, b, c},
 		)

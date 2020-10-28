@@ -16,7 +16,7 @@ type OpStack []Op
 type ErrType string
 
 // ErrString is the error string
-type ErrString string
+type ErrString error
 
 // ErrArgs is the argument involved in the error
 type ErrArgs interface {
@@ -29,7 +29,7 @@ type ErrArgs interface {
 type Error struct {
 	Op      Op
 	OpStack OpStack
-	Err     ErrString
+	Err     error
 	Kind    ErrType
 	Args    ErrArgs
 }
